@@ -1,48 +1,98 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
+
 <head>
+
 <meta charset="UTF-8">
 <title>Chat Sodré Estofados</title>
+
+<style>
+
+body{
+font-family: Arial;
+background:#f4f4f4;
+padding:20px;
+}
+
+#chat{
+background:white;
+padding:20px;
+border-radius:10px;
+height:400px;
+overflow-y:auto;
+margin-bottom:10px;
+}
+
+input{
+width:70%;
+padding:10px;
+}
+
+button{
+padding:10px 20px;
+cursor:pointer;
+}
+
+.user{
+color:blue;
+margin:5px 0;
+}
+
+.bot{
+color:green;
+margin:5px 0;
+}
+
+</style>
+
 </head>
 
 <body>
 
-<h2>Atendimento Sodré Estofados</h2>
+<h2>Chat - Sodré Estofados</h2>
 
 <div id="chat"></div>
 
 <input id="mensagem" placeholder="Digite sua mensagem">
+
 <button onclick="enviar()">Enviar</button>
 
 <script>
 
 async function enviar(){
 
-const msg = document.getElementById("mensagem").value;
+const mensagem = document.getElementById("mensagem").value;
+
+const chat = document.getElementById("chat");
+
+chat.innerHTML += `<div class="user">Você: ${mensagem}</div>`;
+
+document.getElementById("mensagem").value = "";
 
 const resposta = await fetch("https://sodre-chat-site.onrender.com/chat",{
+
 method:"POST",
+
 headers:{
 "Content-Type":"application/json"
 },
-body:JSON.stringify({
-message:msg
+
+body: JSON.stringify({
+message: mensagem
 })
+
 });
 
 const data = await resposta.json();
 
-document.getElementById("chat").innerHTML +=
-"<p><b>Você:</b> "+msg+"</p>";
+chat.innerHTML += `<div class="bot">Júlia: ${data.reply}</div>`;
 
-document.getElementById("chat").innerHTML +=
-"<p><b>Júlia:</b> "+data.reply+"</p>";
-
-document.getElementById("mensagem").value="";
+chat.scrollTop = chat.scrollHeight;
 
 }
 
 </script>
 
 </body>
+
 </html>
