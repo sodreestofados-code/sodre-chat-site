@@ -1,46 +1,27 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html>
 
 <head>
 
 <meta charset="UTF-8">
-<title>Chat Sodré Estofados</title>
+
+<title>Chat Sodré</title>
 
 <style>
 
 body{
-font-family: Arial;
-background:#f4f4f4;
+font-family:Arial;
+background:#f2f2f2;
 padding:20px;
 }
 
 #chat{
 background:white;
-padding:20px;
-border-radius:10px;
 height:400px;
-overflow-y:auto;
-margin-bottom:10px;
-}
-
-input{
-width:70%;
+overflow:auto;
 padding:10px;
-}
-
-button{
-padding:10px 20px;
-cursor:pointer;
-}
-
-.user{
-color:blue;
-margin:5px 0;
-}
-
-.bot{
-color:green;
-margin:5px 0;
+border-radius:10px;
+margin-bottom:10px;
 }
 
 </style>
@@ -49,7 +30,7 @@ margin:5px 0;
 
 <body>
 
-<h2>Chat - Sodré Estofados</h2>
+<h2>Chat Sodré Estofados</h2>
 
 <div id="chat"></div>
 
@@ -61,15 +42,15 @@ margin:5px 0;
 
 async function enviar(){
 
-const mensagem = document.getElementById("mensagem").value;
+let mensagem = document.getElementById("mensagem").value;
 
-const chat = document.getElementById("chat");
+let chat = document.getElementById("chat");
 
-chat.innerHTML += `<div class="user">Você: ${mensagem}</div>`;
+chat.innerHTML += "<p><b>Você:</b> "+mensagem+"</p>";
 
-document.getElementById("mensagem").value = "";
+document.getElementById("mensagem").value="";
 
-const resposta = await fetch("https://sodre-chat-site.onrender.com/chat",{
+let resposta = await fetch("/chat",{
 
 method:"POST",
 
@@ -83,9 +64,9 @@ message: mensagem
 
 });
 
-const data = await resposta.json();
+let data = await resposta.json();
 
-chat.innerHTML += `<div class="bot">Júlia: ${data.reply}</div>`;
+chat.innerHTML += "<p><b>Júlia:</b> "+data.reply+"</p>";
 
 chat.scrollTop = chat.scrollHeight;
 
