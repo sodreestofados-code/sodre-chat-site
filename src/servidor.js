@@ -1,15 +1,19 @@
 const express = require("express");
 const fetch = require("node-fetch");
 const cors = require("cors");
+const path = require("path");
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-/* ROTA INICIAL (TESTE DO SERVIDOR) */
-app.get("/", (req, res) => {
-  res.send("Servidor do chat Sodré Estofados está online!");
+/* MOSTRAR A PÁGINA HTML */
+app.use(express.static(path.join(__dirname, "..")));
+
+/* TESTE DO SERVIDOR */
+app.get("/api", (req, res) => {
+  res.send("Servidor do chat Sodré funcionando");
 });
 
 /* CHAVE DA OPENAI */
@@ -23,24 +27,34 @@ app.post("/chat", async (req, res) => {
     const mensagem = req.body.message;
 
     const resposta = await fetch("https://api.openai.com/v1/chat/completions", {
+
       method: "POST",
+
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${API_KEY}`
       },
+
       body: JSON.stringify({
+
         model: "gpt-4o-mini",
+
         messages: [
+
           {
             role: "system",
-            content: "Você é Júlia, assistente da Sodré Estofados e Higienização. Seja simpática, natural e ajude clientes a pedir orçamento de limpeza de estofados."
+            content: "Você é Júlia, assistente da Sodré Estofados. Seja simpática e ajude clientes a pedir orçamento de limpeza de estofados."
           },
+
           {
             role: "user",
             content: mensagem
           }
+
         ]
+
       })
+
     });
 
     const data = await resposta.json();
@@ -51,19 +65,19 @@ app.post("/chat", async (req, res) => {
 
   } catch (erro) {
 
-    console.error(erro);
+    console.log(erro);
 
-    res.status(500).json({
-      reply: "Desculpe, ocorreu um erro no servidor."
+    res.json({
+      reply: "Erro no servidor."
     });
 
   }
 
 });
 
-/* PORTA CORRETA PARA O RENDER */
+/* PORTA DO RENDER */
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console.log("Servidor rodando na porta " + PORT);
+  console.log("Servidor rodando");
 });
