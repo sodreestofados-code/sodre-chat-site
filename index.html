@@ -5,23 +5,76 @@
 
 <meta charset="UTF-8">
 
-<title>Chat Sodré</title>
+<title>Sodré Estofados</title>
 
 <style>
 
 body{
 font-family:Arial;
-background:#f2f2f2;
-padding:20px;
+background:#ece5dd;
+margin:0;
 }
 
 #chat{
-background:white;
-height:400px;
+
+height:80vh;
 overflow:auto;
+padding:20px;
+
+}
+
+.msg{
+
 padding:10px;
 border-radius:10px;
-margin-bottom:10px;
+margin:10px;
+max-width:70%;
+
+}
+
+.user{
+
+background:#dcf8c6;
+margin-left:auto;
+
+}
+
+.bot{
+
+background:white;
+
+}
+
+#barra{
+
+position:fixed;
+bottom:0;
+width:100%;
+background:white;
+padding:10px;
+display:flex;
+gap:10px;
+
+}
+
+input{
+
+flex:1;
+padding:10px;
+border-radius:20px;
+border:1px solid #ccc;
+
+}
+
+button{
+
+background:#25d366;
+border:none;
+color:white;
+padding:10px 20px;
+border-radius:20px;
+cursor:pointer;
+
 }
 
 </style>
@@ -30,13 +83,15 @@ margin-bottom:10px;
 
 <body>
 
-<h2>Chat Sodré Estofados</h2>
-
 <div id="chat"></div>
+
+<div id="barra">
 
 <input id="mensagem" placeholder="Digite sua mensagem">
 
 <button onclick="enviar()">Enviar</button>
+
+</div>
 
 <script>
 
@@ -44,9 +99,11 @@ async function enviar(){
 
 let mensagem = document.getElementById("mensagem").value;
 
+if(!mensagem) return;
+
 let chat = document.getElementById("chat");
 
-chat.innerHTML += "<p><b>Você:</b> "+mensagem+"</p>";
+chat.innerHTML += `<div class="msg user">${mensagem}</div>`;
 
 document.getElementById("mensagem").value="";
 
@@ -66,7 +123,7 @@ message: mensagem
 
 let data = await resposta.json();
 
-chat.innerHTML += "<p><b>Júlia:</b> "+data.reply+"</p>";
+chat.innerHTML += `<div class="msg bot">${data.reply}</div>`;
 
 chat.scrollTop = chat.scrollHeight;
 
