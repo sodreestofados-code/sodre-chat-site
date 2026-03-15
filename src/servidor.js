@@ -1,23 +1,20 @@
 const express = require("express");
-const fetch = require("node-fetch");
 const cors = require("cors");
+const fetch = require("node-fetch");
 const path = require("path");
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
-
-/* MOSTRAR A PÁGINA HTML */
 app.use(express.static(path.join(__dirname, "..")));
 
-/* TESTE DO SERVIDOR */
+const API_KEY = process.env.OPENAI_API_KEY;
+
+/* ROTA TESTE */
 app.get("/api", (req, res) => {
   res.send("Servidor do chat Sodré funcionando");
 });
-
-/* CHAVE DA OPENAI */
-const API_KEY = process.env.OPENAI_API_KEY;
 
 /* ROTA DO CHAT */
 app.post("/chat", async (req, res) => {
@@ -59,13 +56,23 @@ app.post("/chat", async (req, res) => {
 
     const data = await resposta.json();
 
+    console.log("Resposta da OpenAI:", data);
+
+    if (!data.choices) {
+
+      return res.json({
+        reply: "Erro ao acessar a IA. Verifique a chave da API ou saldo da conta."
+      });
+
+    }
+
     res.json({
       reply: data.choices[0].message.content
     });
 
   } catch (erro) {
 
-    console.log(erro);
+    console.log("Erro:", erro);
 
     res.json({
       reply: "Erro no servidor."
@@ -76,8 +83,9 @@ app.post("/chat", async (req, res) => {
 });
 
 /* PORTA DO RENDER */
+
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console.log("Servidor rodando");
+  console.log("Servidor rodando na porta " + PORT);
 });
