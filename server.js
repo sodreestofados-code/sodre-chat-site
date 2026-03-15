@@ -1,6 +1,6 @@
-import express from "express";
-import fetch from "node-fetch";
-import cors from "cors";
+const express = require("express");
+const fetch = require("node-fetch");
+const cors = require("cors");
 
 const app = express();
 app.use(cors());
@@ -41,6 +41,8 @@ reply: data.choices[0].message.content
 
 });
 
-app.listen(3000, () => {
-console.log("Servidor rodando");
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+console.log("Servidor rodando na porta " + PORT);
 });
