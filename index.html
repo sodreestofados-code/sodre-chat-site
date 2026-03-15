@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Chat Sodré Estofados</title>
+</head>
+
+<body>
+
+<h2>Atendimento Sodré Estofados</h2>
+
+<div id="chat"></div>
+
+<input id="mensagem" placeholder="Digite sua mensagem">
+<button onclick="enviar()">Enviar</button>
+
+<script>
+
+async function enviar(){
+
+const msg = document.getElementById("mensagem").value;
+
+const resposta = await fetch("https://sodre-chat-site.onrender.com/chat",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+message:msg
+})
+});
+
+const data = await resposta.json();
+
+document.getElementById("chat").innerHTML +=
+"<p><b>Você:</b> "+msg+"</p>";
+
+document.getElementById("chat").innerHTML +=
+"<p><b>Júlia:</b> "+data.reply+"</p>";
+
+document.getElementById("mensagem").value="";
+
+}
+
+</script>
+
+</body>
+</html>
