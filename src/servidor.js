@@ -11,17 +11,27 @@ app.use(express.static(path.join(__dirname, "..")));
 
 const API_KEY = process.env.OPENAI_API_KEY;
 
+/* MEMÓRIA SIMPLES DA CONVERSA */
+let historico = [];
+
 /* ROTA TESTE */
+
 app.get("/api", (req, res) => {
   res.send("Servidor do chat Sodré funcionando");
 });
 
-/* ROTA DO CHAT */
+/* ROTA CHAT */
+
 app.post("/chat", async (req, res) => {
 
   try {
 
     const mensagem = req.body.message;
+
+    historico.push({
+      role: "user",
+      content: mensagem
+    });
 
     const resposta = await fetch("https://api.openai.com/v1/chat/completions", {
 
@@ -37,57 +47,62 @@ app.post("/chat", async (req, res) => {
         model: "gpt-4o-mini",
 
         messages: [
-{
-role: "system",
-content: `
-Você é Júlia, assistente da Sodré Estofados.
 
-Responda como uma atendente de WhatsApp.
+          {
+            role: "system",
+            content: `
+Você é Júlia, atendente da Sodré Estofados e Higienização.
 
-Regras:
-• respostas curtas
-• uma pergunta por vez
-• não repetir perguntas já respondidas
-• usar as informações que o cliente já deu
+Fale como uma atendente de WhatsApp.
 
-Tabela de preços base:
+REGRAS:
 
-Sofá 1 lugar: 120
-Sofá 2 lugares: 150
-Sofá 3 lugares: 200 a 250
+• Respostas curtas (máximo 2 frases)
+• Faça apenas uma pergunta por vez
+• Não repita perguntas que o cliente já respondeu
+• Use as informações que o cliente já deu
+• Seja simpática mas direta
 
-Para sofás maiores calcule proporcionalmente mas nao precisa citar isso
-na conversa so precisa calcular.
+SERVIÇOS:
+
+Sofá 1 lugar: R$120  
+Sofá 2 lugares: R$150  
+Sofá 3 lugares: R$200 a R$250
+
+Sofás maiores devem ser calculados proporcionalmente.
 
 Exemplo:
 Sofá 6 lugares = dois de 3 lugares.
 
-Sempre considerar:
+Outros serviços:
+
+Colchão solteiro: R$120  
+Colchão casal: R$150  
+Colchão berço: R$100  
+
+Carrinho bebê: R$60 a R$70  
+
+Travesseiro: R$45  
+Almofada: R$30  
+
+Lavagem automotiva interna: a partir de R$350
+
+Sempre considere:
+
 • quantidade de lugares
 • estado da sujeira
+• manchas
 • cidade
 
-Atendimento em Itaquirai.
-`
-},
+A empresa atende Itaquirai.
 
-{
-role: "user",
-content: mensagem
-}
+Quando o cliente quiser fechar serviço envie:
 
-]
-
-          
-            
-
+https://w.app/dlnbrp
 `
           },
 
-          {
-            role: "user",
-            content: mensagem
-          }
+          ...historico
 
         ]
 
@@ -97,23 +112,30 @@ content: mensagem
 
     const data = await resposta.json();
 
-    console.log("Resposta da OpenAI:", data);
-
     if (!data.choices) {
 
+      console.log(data);
+
       return res.json({
-        reply: "Erro ao acessar a IA. Verifique a chave da API ou saldo da conta."
+        reply: "Erro ao acessar a IA."
       });
 
     }
 
+    const respostaIA = data.choices[0].message.content;
+
+    historico.push({
+      role: "assistant",
+      content: respostaIA
+    });
+
     res.json({
-      reply: data.choices[0].message.content
+      reply: respostaIA
     });
 
   } catch (erro) {
 
-    console.log("Erro:", erro);
+    console.log(erro);
 
     res.json({
       reply: "Erro no servidor."
@@ -123,7 +145,7 @@ content: mensagem
 
 });
 
-/* PORTA DO RENDER */
+/* PORTA */
 
 const PORT = process.env.PORT || 3000;
 
