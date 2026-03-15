@@ -4,7 +4,9 @@ const cors = require("cors");
 
 const app = express();
 app.use(cors());
-app.use(express.json());
+app.get("/", (req, res) => {
+  res.send("Servidor do chat Sodré Estofados está funcionando!");
+});
 
 const API_KEY = process.env.OPENAI_API_KEY;
 
