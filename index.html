@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,43 +17,38 @@ flex-direction:column;
 height:100vh;
 }
 
-/* CABEÇALHO */
+/* HEADER */
 
 header{
 background:#00a859;
 padding:15px;
 display:flex;
 align-items:center;
-gap:15px;
+gap:10px;
 }
 
 #menuBtn{
-font-size:24px;
+font-size:25px;
 cursor:pointer;
 }
 
-/* MENU LATERAL */
+/* MENU */
 
 #menu{
 position:fixed;
 top:0;
-left:-260px;
-width:260px;
+left:-250px;
+width:250px;
 height:100%;
 background:#111;
-padding:25px;
+padding:20px;
 transition:0.3s;
-z-index:1000;
-}
-
-#menu h2{
-margin-top:0;
+z-index:999;
 }
 
 #menu span{
 display:block;
-margin:18px 0;
-font-size:18px;
+margin:15px 0;
 cursor:pointer;
 }
 
@@ -63,17 +57,19 @@ cursor:pointer;
 #chat{
 flex:1;
 overflow-y:auto;
-padding:15px;
+padding:10px;
 display:flex;
 flex-direction:column;
 gap:10px;
 }
 
+/* MENSAGENS */
+
 .msg{
-padding:12px;
-border-radius:12px;
-max-width:80%;
-word-wrap:break-word;
+padding:10px;
+border-radius:10px;
+max-width:75%;
+word-break:break-word;
 }
 
 .user{
@@ -86,25 +82,17 @@ background:#1e1e1e;
 align-self:flex-start;
 }
 
-/* BARRA INFERIOR */
+/* BARRA */
 
 #barra{
 display:flex;
-gap:8px;
-padding:10px;
-background:black;
+gap:5px;
+padding:8px;
+background:#000;
 align-items:center;
 }
 
-#mais{
-background:none;
-border:none;
-color:white;
-font-size:24px;
-cursor:pointer;
-}
-
-#audio{
+#mais,#audio{
 background:none;
 border:none;
 color:white;
@@ -112,182 +100,155 @@ font-size:22px;
 cursor:pointer;
 }
 
-input{
+#mensagem{
 flex:1;
-padding:12px;
+padding:10px;
 border-radius:20px;
 border:none;
-outline:none;
 }
 
 #enviar{
 background:#00a859;
 border:none;
-color:white;
-padding:10px 15px;
+padding:10px;
 border-radius:20px;
-cursor:pointer;
+color:white;
 }
 
-/* IMAGEM E VIDEO */
-
-.chatImg{
+img,video,audio{
 max-width:200px;
 border-radius:10px;
 }
 
-.chatVideo{
-max-width:220px;
-border-radius:10px;
-}
-
 </style>
-
 </head>
 
 <body>
 
 <header>
-
-<span id="menuBtn" onclick="abrirMenu()">☰</span>
-<strong>Sodré Estofados</strong>
-
+<span id="menuBtn">☰</span>
+<b>Sodré Estofados</b>
 </header>
 
-<!-- MENU LATERAL -->
-
 <div id="menu">
-
-<h2>Menu</h2>
-
-<span onclick="alert('Avaliações em breve')">⭐ Avaliações</span>
-
-<span onclick="window.open('https://www.instagram.com/sodre.etf','_blank')">
-📱 Instagram
-</span>
-
-<span onclick="window.open('https://www.facebook.com/share/183L2WntUW/','_blank')">
-📘 Facebook
-</span>
-
-<span onclick="window.open('https://w.app/dlnbrp','_blank')">
-💬 WhatsApp
-</span>
-
-<span onclick="alert('Área administrador em construção')">
-🔒 Administrador
-</span>
-
+<span>⭐ Avaliações</span>
+<span onclick="window.open('https://www.instagram.com/sodre.etf')">Instagram</span>
+<span onclick="window.open('https://w.app/dlnbrp')">WhatsApp</span>
 </div>
-
-<!-- CHAT -->
 
 <div id="chat"></div>
 
-<!-- INPUT FOTO/VIDEO -->
-
-<input type="file" id="arquivo" accept="image/*,video/*" style="display:none">
-
-<!-- BARRA DE MENSAGEM -->
+<input type="file" id="file" accept="image/*,video/*" hidden>
 
 <div id="barra">
 
-<button id="mais" onclick="abrirArquivo()">+</button>
+<button id="mais">+</button>
 
-<input id="mensagem" placeholder="Digite sua mensagem">
+<input id="mensagem" placeholder="Digite...">
 
 <button id="audio">🎤</button>
 
-<button id="enviar" onclick="enviar()">Enviar</button>
+<button id="enviar">➤</button>
 
 </div>
 
 <script>
 
-function abrirMenu(){
+/* MENU */
 
-let menu = document.getElementById("menu")
-
-if(menu.style.left === "0px"){
-menu.style.left = "-260px"
-}else{
-menu.style.left = "0px"
+document.getElementById("menuBtn").onclick = () => {
+let m = document.getElementById("menu")
+m.style.left = m.style.left === "0px" ? "-250px" : "0px"
 }
 
+/* FOTO / VIDEO */
+
+document.getElementById("mais").onclick = () => {
+document.getElementById("file").click()
 }
 
-function abrirArquivo(){
-document.getElementById("arquivo").click()
-}
+document.getElementById("file").onchange = (e) => {
 
-document.getElementById("arquivo")
-.addEventListener("change", function(){
-
-let file = this.files[0]
-
+let file = e.target.files[0]
 if(!file) return
 
 let chat = document.getElementById("chat")
-
 let url = URL.createObjectURL(file)
 
 if(file.type.startsWith("image")){
-
-chat.innerHTML += `
-<div class="msg user">
-<img src="${url}" class="chatImg">
-</div>
-`
-
+chat.innerHTML += `<div class="msg user"><img src="${url}"></div>`
 }
 
 if(file.type.startsWith("video")){
-
-chat.innerHTML += `
-<div class="msg user">
-<video src="${url}" controls class="chatVideo"></video>
-</div>
-`
+chat.innerHTML += `<div class="msg user"><video src="${url}" controls></video></div>`
+}
 
 }
 
-chat.scrollTop = chat.scrollHeight
+/* AUDIO REAL */
 
-})
+let recorder
+let audioChunks = []
 
-async function enviar(){
+document.getElementById("audio").onmousedown = async () => {
 
-let mensagem = document.getElementById("mensagem").value
+let stream = await navigator.mediaDevices.getUserMedia({audio:true})
 
-if(!mensagem) return
+recorder = new MediaRecorder(stream)
+
+recorder.start()
+
+audioChunks = []
+
+recorder.ondataavailable = e => {
+audioChunks.push(e.data)
+}
+
+}
+
+document.getElementById("audio").onmouseup = () => {
+
+recorder.stop()
+
+recorder.onstop = () => {
+
+let blob = new Blob(audioChunks)
+let url = URL.createObjectURL(blob)
 
 let chat = document.getElementById("chat")
 
 chat.innerHTML += `
-<div class="msg user">${mensagem}</div>
+<div class="msg user">
+<audio controls src="${url}"></audio>
+</div>
 `
 
-document.getElementById("mensagem").value=""
+}
 
-let resposta = await fetch("/chat",{
+}
 
+/* ENVIO TEXTO */
+
+document.getElementById("enviar").onclick = async () => {
+
+let msg = document.getElementById("mensagem").value
+if(!msg) return
+
+let chat = document.getElementById("chat")
+
+chat.innerHTML += `<div class="msg user">${msg}</div>`
+
+document.getElementById("mensagem").value = ""
+
+let res = await fetch("/chat",{
 method:"POST",
-
-headers:{
-"Content-Type":"application/json"
-},
-
-body: JSON.stringify({
-message: mensagem
+headers:{"Content-Type":"application/json"},
+body: JSON.stringify({message: msg})
 })
 
-})
+let data = await res.json()
 
-let data = await resposta.json()
-
-chat.innerHTML += `
-<div class="msg bot">${data.reply}</div>
-`
+chat.innerHTML += `<div class="msg bot">${data.reply}</div>`
 
 chat.scrollTop = chat.scrollHeight
 
@@ -296,5 +257,4 @@ chat.scrollTop = chat.scrollHeight
 </script>
 
 </body>
-
 </html>
